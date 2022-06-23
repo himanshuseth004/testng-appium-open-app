@@ -17,7 +17,7 @@ public class iOSApp {
     String accessKey = System.getenv("LT_ACCESS_KEY") == null ?
             "accessKey" : System.getenv("LT_ACCESS_KEY"); //Add accessKey here
 
-    public String gridURL = "@beta-hub.lambdatest.com/wd/hub";
+    public String gridURL = "@mobile-hub.lambdatest.com/wd/hub";
 
     AppiumDriver driver;
 
@@ -39,7 +39,6 @@ public class iOSApp {
             capabilities.setCapability("network", false);
             capabilities.setCapability("visual", true);
             capabilities.setCapability("devicelog", true);
-            //capabilities.setCapability("geoLocation", "HK");
 
             String hub = "https://" + userName + ":" + accessKey + gridURL;
             driver = new AppiumDriver(new URL(hub), capabilities);
@@ -52,29 +51,29 @@ public class iOSApp {
             Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("Text"))).click();
             Thread.sleep(1000);
 
+            //Close the application
+            driver.closeApp();
+
+            //Open the application
+            driver.launchApp();
+
             Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("toast"))).click();
             Thread.sleep(1000);
 
             Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("notification"))).click();
             Thread.sleep(4000);
 
-            Wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("geoLocation"))).click();
-            Thread.sleep(4000);
-
-            driver.navigate().back();
-
-            //MARKING TEST AS PASSED VIA LAMBDA HOOKS            
-            driver.executeScript('lambda-status=passed');
-
             driver.quit();
 
         } catch (Exception e) {
             e.printStackTrace();
-            
-            //MARKING TEST AS FAILED VIA LAMBDA HOOKS            
-            driver.executeScript('lambda-status=failed');
-            driver.quit();
+            try{
+                driver.quit();
+            }catch(Exception e1){
+                e.printStackTrace();
             }
         }
 
+
     }
+}

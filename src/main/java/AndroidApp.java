@@ -15,7 +15,7 @@ public class AndroidApp {
     String userName = System.getenv("LT_USERNAME") == null ?
             "username" : System.getenv("LT_USERNAME"); //Add username here
     String accessKey = System.getenv("LT_ACCESS_KEY") == null ?
-            "accessKey" : System.getenv("LT_ACCESS_KEY"); //Add accessKey here
+            "accesskey" : System.getenv("LT_ACCESS_KEY"); //Add accessKey here
 
     public String gridURL = "@mobile-hub.lambdatest.com/wd/hub";
 
@@ -43,11 +43,18 @@ public class AndroidApp {
             driver = new AppiumDriver(new URL(hub), capabilities);
 
             MobileElement color = (MobileElement) driver.findElementById("com.lambdatest.proverbial:id/color");
+            
             color.click();
             Thread.sleep(1000);
 
             MobileElement text = (MobileElement) driver.findElementById("com.lambdatest.proverbial:id/Text");
             text.click();
+
+            //Close the application
+            driver.closeApp();
+
+            //Open the application
+            driver.launchApp();
 
             MobileElement toast = (MobileElement) driver.findElementById("com.lambdatest.proverbial:id/toast");
             toast.click();
@@ -56,39 +63,14 @@ public class AndroidApp {
             notification.click();
             Thread.sleep(2000);
 
-            MobileElement geo = (MobileElement) driver.findElementById("com.lambdatest.proverbial:id/geoLocation");
-            geo.click();
-            Thread.sleep(5000);
-
-            MobileElement home = (MobileElement) driver.findElementByAccessibilityId("Home");
-            home.click();
-
-            MobileElement speedtest = (MobileElement) driver.findElementById("com.lambdatest.proverbial:id/speedTest");
-            speedtest.click();
-            Thread.sleep(5000);
-
-            MobileElement Home = (MobileElement) driver.findElementByAccessibilityId("Home");
-            Home.click();
-
-            MobileElement browser = (MobileElement) driver.findElementByAccessibilityId("Browser");
-            browser.click();
-
-            MobileElement url = (MobileElement) driver.findElementById("com.lambdatest.proverbial:id/url");
-            url.sendKeys("https://www.lambdatest.com");
-
-            MobileElement find = (MobileElement) driver.findElementById("com.lambdatest.proverbial:id/find");
-            find.click();
-
-            //MARKING TEST AS PASSED VIA LAMBDA HOOKS            
-            driver.executeScript('lambda-status=passed');
-
             driver.quit();
 
         } catch (Exception e) {
             e.printStackTrace();
-            //MARKING TEST AS FAILED VIA LAMBDA HOOKS            
-            driver.executeScript('lambda-status=failed');
-            driver.quit();
+            try{
+                driver.quit();
+            }catch(Exception e1){
+                e.printStackTrace();
             }
         }
 
